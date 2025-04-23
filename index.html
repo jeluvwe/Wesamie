@@ -1,90 +1,132 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Wesamie Card</title>
   <style>
     body {
       margin: 0;
       height: 100vh;
-      background: url('https://i.imgur.com/GgKZz8v.jpg') repeat;
+      background: url('https://www.transparenttextures.com/patterns/flower-power.png') no-repeat center center fixed;
       background-size: cover;
       font-family: 'Courier New', Courier, monospace;
       display: flex;
       justify-content: center;
       align-items: center;
+      flex-direction: column;
       overflow: hidden;
     }
 
     .card-container {
-      perspective: 1000px;
-      width: 320px;
-      height: 450px;
       position: relative;
+      width: 300px;
+      height: 400px;
+      perspective: 1000px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
     .card {
       width: 100%;
       height: 100%;
+      background-color: #ffe6f0;
       border-radius: 15px;
-      position: relative;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
       transform-style: preserve-3d;
       transition: transform 1s;
       cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
     }
 
     .card.flipped {
       transform: rotateY(180deg);
     }
 
-    .front, .back {
-      position: absolute;
+    .card .front, .card .back {
       width: 100%;
       height: 100%;
-      border-radius: 15px;
-      backface-visibility: hidden;
       display: flex;
       justify-content: center;
       align-items: center;
+      position: absolute;
+      backface-visibility: hidden;
+      border-radius: 15px;
       padding: 20px;
+    }
+
+    .card .front {
+      background-color: #ffb6c1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      font-size: 20px;
+      color: #c0392b;
       text-align: center;
     }
 
-    .front {
-      background: url('https://i.imgur.com/dEF0RMP.jpg') no-repeat center center;
-      background-size: cover;
-      color: #fff;
-      font-size: 22px;
-      font-weight: bold;
-      flex-direction: column;
+    .card .front p {
+      margin: 0;
     }
 
-    .back {
-      background: url('https://i.imgur.com/QPZGoNB.jpg') no-repeat center center;
-      background-size: cover;
+    .card .back {
+      background-color: #ffffff;
       color: #c0392b;
       font-size: 16px;
       line-height: 1.5;
+      text-align: center;
       transform: rotateY(180deg);
-      font-weight: bold;
-      padding: 30px;
+    }
+
+    .hearts {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 60px;
+      animation: heartAnimation 1.5s infinite;
+      display: none;
+    }
+
+    @keyframes heartAnimation {
+      0% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 1;
+      }
+      50% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.5;
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 0;
+      }
+    }
+
+    .falling-flowers {
+      position: absolute;
+      top: -50px;
+      animation: flowerFall 3s infinite;
+      z-index: -1;
+      display: none;
     }
 
     .flower {
       position: absolute;
+      background: url('https://www.transparenttextures.com/patterns/flower-power.png');
       width: 30px;
       height: 30px;
-      background-image: url('https://i.imgur.com/MFh1jOl.png');
-      background-size: contain;
-      background-repeat: no-repeat;
-      animation: fall 4s linear forwards;
-      z-index: 1000;
+      animation: flowerFall 5s linear infinite;
     }
 
-    @keyframes fall {
+    @keyframes flowerFall {
       0% {
-        top: -40px;
+        top: -50px;
         opacity: 1;
       }
       100% {
@@ -92,13 +134,16 @@
         opacity: 0;
       }
     }
+
   </style>
 </head>
 <body>
+
   <div class="card-container">
     <div class="card" onclick="flipCard()">
       <div class="front">
         <p>Click when you're ready, Wesamie</p>
+        <p>💋💋💋</p>
       </div>
       <div class="back">
         <p>
@@ -109,31 +154,46 @@
           not briefly,<br>
           just always.
         </p>
+        <p>❤️❤️❤️</p>
       </div>
     </div>
   </div>
 
+  <div class="hearts">❤️❤️❤️</div>
+  <div class="falling-flowers"></div>
+
   <script>
+    let flowers = [];
+    let flowerCount = 10;
+
+    // Flower creation
+    function createFlowers() {
+      let flowerContainer = document.querySelector('.falling-flowers');
+      for (let i = 0; i < flowerCount; i++) {
+        let flower = document.createElement('div');
+        flower.classList.add('flower');
+        flower.style.left = Math.random() * 100 + 'vw'; // random left position
+        flower.style.animationDuration = Math.random() * 3 + 2 + 's'; // random speed
+        flowerContainer.appendChild(flower);
+      }
+    }
+
+    // Card flip animation
     function flipCard() {
       const card = document.querySelector('.card');
       card.classList.toggle('flipped');
+
+      // Show hearts
+      document.querySelector('.hearts').style.display = 'block';
+      setTimeout(() => {
+        document.querySelector('.hearts').style.display = 'none';
+      }, 1500);
+
+      // Show falling flowers
       createFlowers();
-    }
-
-    function createFlowers() {
-      for (let i = 0; i < 15; i++) {
-        const flower = document.createElement('div');
-        flower.classList.add('flower');
-        flower.style.left = Math.random() * window.innerWidth + 'px';
-        flower.style.top = '-40px';
-        flower.style.animationDuration = (Math.random() * 2 + 3) + 's';
-        document.body.appendChild(flower);
-
-        setTimeout(() => {
-          flower.remove();
-        }, 5000);
-      }
+      document.querySelector('.falling-flowers').style.display = 'block';
     }
   </script>
+
 </body>
 </html>
